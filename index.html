@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>منازل الرمال</title>
   <style>
     body {
@@ -25,17 +25,6 @@
     header h1 {
       margin: 0;
       font-size: 2em;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .logo img {
-      height: 100px;
-      width: auto;
     }
 
     nav a {
@@ -88,10 +77,14 @@
       height: 200px;
       object-fit: cover;
       display: none;
+      transition: opacity 0.5s ease;
+      position: absolute;
+      top: 0; left: 0;
     }
 
     .slider img.active {
       display: block;
+      position: relative;
     }
 
     .unit .info {
@@ -110,15 +103,9 @@
       width: 100%;
       cursor: pointer;
       border-radius: 5px;
+      font-size: 1em;
+      transition: background-color 0.3s ease;
     }
-    .popup {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-
-
     .unit button:hover {
       background-color: #6b442c;
     }
@@ -127,11 +114,17 @@
       padding: 30px;
       background-color: #eee;
       margin-top: 20px;
+      border-radius: 10px;
+      max-width: 960px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    .services ul {
+    .services ul, .policies ul {
       list-style: none;
       padding: 0;
+      font-size: 1.1em;
+      line-height: 1.6em;
     }
 
     .services li::before {
@@ -145,6 +138,9 @@
       border-left: 5px solid #8b5e3c;
       margin: 10px 0;
       padding-left: 10px;
+      background: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
     }
 
     .map iframe {
@@ -166,12 +162,68 @@
       border-radius: 5px;
       text-decoration: none;
       font-weight: bold;
+      display: inline-block;
+      transition: background-color 0.3s ease;
+    }
+
+    .whatsapp a:hover {
+      background-color: #1ebe5d;
     }
 
     footer {
       background-color: #333;
       color: white;
       text-align: center;
+      padding: 15px;
+      margin-top: 30px;
+    }
+
+    /* البوب أب */
+    .popup {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .popup-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+
+    .popup-content input, .popup-content select {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+
+    .popup-content button {
+      background-color: #8b5e3c;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1.1em;
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    .popup-content button:hover {
+      background-color: #6b442c;
     }
   </style>
 </head>
@@ -195,8 +247,8 @@
   <section id="units" class="units">
     <div class="unit">
       <div class="slider">
-        <img src="images/unit1-1.jpg" class="active">
-        <img src="images/unit1-2.jpg">
+        <img src="hotel.jpg" class="active" alt="وحدة اقتصادية صورة 1" />
+        <img src="hotel.jpg" alt="وحدة اقتصادية صورة 2" />
       </div>
       <div class="info">
         <h3>وحدة اقتصادية</h3>
@@ -209,8 +261,8 @@
 
     <div class="unit">
       <div class="slider">
-        <img src="images/unit2-1.jpg" class="active">
-        <img src="images/unit2-2.jpg">
+        <img src="hotel.jpg" class="active" alt="وحدة عائلية صورة 1" />
+        <img src="hotel.jpg" alt="وحدة عائلية صورة 2" />
       </div>
       <div class="info">
         <h3>وحدة عائلية</h3>
@@ -223,15 +275,15 @@
 
     <div class="unit">
       <div class="slider">
-        <img src="images/unit3-1.jpg" class="active">
-        <img src="images/unit3-2.jpg">
+        <img src="hotel.jpg" class="active" alt="وحدة متوسطة صورة 1" />
+        <img src="hotel.jpg" alt="وحدة متوسطة صورة 2" />
       </div>
       <div class="info">
-        <h3>وحدة متوسطة</h3>
+        <h3>وحدة مريحة</h3>
         <p>غرفة نوم وصالة فسيحة، مثالية للأزواج الباحثين عن الراحة.</p>
         <p>السعر: 200 ريال / الليلة</p>
         <p>عدد الأفراد: 3</p>
-        <button onclick="openPopup('وحدة متوسطة')">احجز الآن</button>
+        <button onclick="openPopup('وحدة مريحة')">احجز الآن</button>
       </div>
     </div>
   </section>
@@ -239,72 +291,75 @@
   <section id="services" class="services">
     <h2>الخدمات الإضافية</h2>
     <ul>
-      <li>📶 واي فاي مجاني</li>
-      <li>🚗 مواقف سيارات</li>
-      <li>🧹 خدمة تنظيف يومية</li>
+      <li> واي فاي مجاني</li>
+      <li> مواقف سيارات</li>
+      <li> خدمة تنظيف يومية</li>
     </ul>
   </section>
 
   <section id="policies" class="policies">
     <h2>سياسات الحجز</h2>
     <ul>
-      <li>تأكيد الحجز يتم بعد دفع العربون.</li>
+      <li>تأكيد الحجز يتم بعد الدفع </li>
       <li>إلغاء الحجز متاح قبل 24 ساعة من الوصول.</li>
-      <li>الالتزام بمواعيد الدخول والخروج (3 م - 12 م).</li>
+      <li>الالتزام بمواعيد الدخول والخروج (تسجيل الدخول 7ص -الخروج اليوم الثاني الساعة 2 م).</li>
     </ul>
   </section>
-
+<!--
   <section class="testimonials">
     <h2>آراء عملائنا</h2>
     <blockquote>كانت إقامة رائعة! المكان نظيف وهادئ. – أحمد</blockquote>
     <blockquote>الخدمة ممتازة والأسعار مناسبة جدًا. – فاطمة</blockquote>
   </section>
-
+-->
   <section id="contact" class="contact">
     <h2>تواصل معنا</h2>
     <p>📞 رقم الهاتف: 0532949990</p>
     <p>✉️ البريد الإلكتروني: info@sandhouses.com</p>
     <div class="whatsapp">
-      <a href="https://wa.me/966532949990" target="_blank">📲 احجز عبر واتساب</a>
+      <a href="https://wa.me/message/5ZVKCCVJ7XJJI1" target="_blank" rel="noopener noreferrer">📲 احجز عبر واتساب</a>
     </div>
   </section>
 
   <section class="location map">
     <h2>موقعنا</h2>
-    <iframe src="https://www.google.com/maps/embed?..." allowfullscreen></iframe>
+    <iframe src="https://www.google.com/maps/embed?..." allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
   </section>
 
   <footer>
     <p>جميع الحقوق محفوظة © منازل الرمال</p>
   </footer>
 
+  <!-- Popup الحجز -->
   <div class="popup" id="popup">
     <div class="popup-content">
       <h3>إدخال بيانات الحجز</h3>
       <form id="bookingForm" action="https://formspree.io/f/mblyldkl" method="POST" onsubmit="closePopup()">
-        <input type="text" name="الاسم الكامل" placeholder="الاسم الكامل" required>
-        <input type="text" name="رقم الهوية" placeholder="رقم الهوية" required>
-        <input type="date" name="تاريخ الميلاد" placeholder="تاريخ الميلاد" required>
-        <input type="text" name="رقم نسخة الهوية" placeholder="رقم نسخة الهوية" required>
-        <input type="hidden" name="نوع الوحدة" id="unitTypeInput">
+        <input type="text" name="الاسم الكامل" placeholder="الاسم الكامل" required />
+        <input type="text" name="رقم الهوية" placeholder="رقم الهوية" required />
+        <input type="date" name="تاريخ الميلاد" placeholder="تاريخ الميلاد" required />
+        <input type="text" name="رقم نسخة الهوية" placeholder="رقم نسخة الهوية" required />
+        <input type="hidden" name="نوع الوحدة" id="unitTypeInput" />
         <button type="submit">تأكيد الحجز</button>
       </form>
     </div>
   </div>
 
   <script>
+    // فتح البوب أب وتعبئة نوع الوحدة
     function openPopup(unitType) {
       document.getElementById("unitTypeInput").value = unitType;
       document.getElementById("popup").style.display = "flex";
     }
 
+    // إغلاق البوب أب بعد الإرسال (تأخير بسيط لإظهار الإرسال)
     function closePopup() {
       setTimeout(() => {
         document.getElementById("popup").style.display = "none";
       }, 1000);
     }
 
-    // Simple image slider for each unit
+    // السلايدر البسيط للصور داخل كل وحدة
     document.querySelectorAll('.slider').forEach(slider => {
       let images = slider.querySelectorAll('img');
       let index = 0;
