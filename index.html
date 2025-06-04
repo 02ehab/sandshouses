@@ -117,6 +117,13 @@
   display: flex;
 }
 
+.popup {
+  display: none;
+  /* باقي الخصائص كما هي */
+}
+.popup.show {
+  display: flex;
+}
 
     .services, .contact, .policies, .testimonials, .location, footer {
       padding: 30px;
@@ -355,11 +362,11 @@
 
   <script>
     // فتح البوب أب وتعبئة نوع الوحدة
-   function openPopup(unitType) {
+  function openPopup(unitType) {
   document.getElementById("unitTypeInput").value = unitType;
   document.getElementById("popup").classList.add("show");
 }
-    }
+
 
     // إغلاق البوب أب بعد الإرسال (تأخير بسيط لإظهار الإرسال)
     function closePopup() {
@@ -367,6 +374,7 @@
     document.getElementById("popup").classList.remove("show");
   }, 1000);
 }
+وزيد في CSS:
 
     // السلايدر البسيط للصور داخل كل وحدة
     document.querySelectorAll('.slider').forEach(slider => {
