@@ -109,6 +109,14 @@
     .unit button:hover {
       background-color: #6b442c;
     }
+    .popup {
+  display: none;
+  /* باقي الخصائص كما هي */
+}
+.popup.show {
+  display: flex;
+}
+
 
     .services, .contact, .policies, .testimonials, .location, footer {
       padding: 30px;
@@ -251,11 +259,11 @@
         <img src="hotel.jpg" alt="وحدة اقتصادية صورة 2" />
       </div>
       <div class="info">
-        <h3>وحدة اقتصادية</h3>
+        <h3>غرفة وحمام </h3>
         <p>غرفة نوم مريحة مع حمام خاص، مثالية للإقامات القصيرة أو للأفراد.</p>
         <p>السعر: 150 ريال / الليلة</p>
         <p>عدد الأفراد: 2</p>
-        <button onclick="openPopup('وحدة اقتصادية')">احجز الآن</button>
+        <button onclick="openPopup(' غرفة وحمام')">احجز الآن</button>
       </div>
     </div>
 
@@ -265,11 +273,11 @@
         <img src="hotel.jpg" alt="وحدة عائلية صورة 2" />
       </div>
       <div class="info">
-        <h3>وحدة عائلية</h3>
-        <p>3 غرف نوم، مطبخ، وصالة واسعة. مناسبة للعائلات الكبيرة.</p>
-        <p>السعر: 250 ريال / الليلة</p>
-        <p>عدد الأفراد: 5</p>
-        <button onclick="openPopup('وحدة عائلية')">احجز الآن</button>
+        <h3> غرفة وصالة </h3>
+        <p> غرفة نوم وصالة فسيحة، مثالية للأزواج الباحثين عن الراح.</p>
+        <p>السعر: 200 ريال / الليلة</p>
+        <p>عدد الأفراد: 3</p>
+        <button onclick="openPopup('شقة غرفتين ')">احجز الآن</button>
       </div>
     </div>
 
@@ -279,11 +287,11 @@
         <img src="hotel.jpg" alt="وحدة متوسطة صورة 2" />
       </div>
       <div class="info">
-        <h3>وحدة مريحة</h3>
-        <p>غرفة نوم وصالة فسيحة، مثالية للأزواج الباحثين عن الراحة.</p>
-        <p>السعر: 200 ريال / الليلة</p>
-        <p>عدد الأفراد: 3</p>
-        <button onclick="openPopup('وحدة مريحة')">احجز الآن</button>
+        <h3> شقة غرفتين </h3>
+        <p>غرفتين نوم، مطبخ، وصالة واسعة. مناسبة للعائلات الكبيرة.</p>
+        <p>السعر: 250 ريال / الليلة</p>
+        <p>عدد الأفراد: 5</p>
+        <button onclick="openPopup('غرفة وصالة ')">احجز الآن</button>
       </div>
     </div>
   </section>
@@ -347,17 +355,18 @@
 
   <script>
     // فتح البوب أب وتعبئة نوع الوحدة
-    function openPopup(unitType) {
-      document.getElementById("unitTypeInput").value = unitType;
-      document.getElementById("popup").style.display = "flex";
+   function openPopup(unitType) {
+  document.getElementById("unitTypeInput").value = unitType;
+  document.getElementById("popup").classList.add("show");
+}
     }
 
     // إغلاق البوب أب بعد الإرسال (تأخير بسيط لإظهار الإرسال)
     function closePopup() {
-      setTimeout(() => {
-        document.getElementById("popup").style.display = "none";
-      }, 1000);
-    }
+  setTimeout(() => {
+    document.getElementById("popup").classList.remove("show");
+  }, 1000);
+}
 
     // السلايدر البسيط للصور داخل كل وحدة
     document.querySelectorAll('.slider').forEach(slider => {
