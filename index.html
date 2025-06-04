@@ -35,7 +35,7 @@
     }
 
     .hero {
-      background-image: url('images/hotel.jpg');
+      background-image: url('hotel.jpg');
       background-size: cover;
       background-position: center;
       height: 400px;
@@ -109,21 +109,6 @@
     .unit button:hover {
       background-color: #6b442c;
     }
-    .popup {
-  display: none;
-  /* باقي الخصائص كما هي */
-}
-.popup.show {
-  display: flex;
-}
-
-.popup {
-  display: none;
-  /* باقي الخصائص كما هي */
-}
-.popup.show {
-  display: flex;
-}
 
     .services, .contact, .policies, .testimonials, .location, footer {
       padding: 30px;
@@ -195,26 +180,35 @@
 
     /* البوب أب */
     .popup {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0,0,0,0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
 
-    .popup-content {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      width: 90%;
-      max-width: 400px;
-      text-align: center;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    }
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  position: relative;
+  width: 90%;
+  max-width: 400px;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px; /* استخدم right: 10px; إذا تبيها في اليمين */
+  font-size: 20px;
+  font-weight: bold;
+  color: #8b5e3c;
+  cursor: pointer;
+}
 
     .popup-content input, .popup-content select {
       width: 90%;
@@ -240,6 +234,37 @@
     .popup-content button:hover {
       background-color: #6b442c;
     }
+    .popup {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  position: relative;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 400px;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #8b5e3c;
+  font-weight: bold;
+}
+
   </style>
 </head>
 <body>
@@ -266,11 +291,11 @@
         <img src="hotel.jpg" alt="وحدة اقتصادية صورة 2" />
       </div>
       <div class="info">
-        <h3>غرفة وحمام </h3>
+        <h3>وحدة اقتصادية</h3>
         <p>غرفة نوم مريحة مع حمام خاص، مثالية للإقامات القصيرة أو للأفراد.</p>
         <p>السعر: 150 ريال / الليلة</p>
         <p>عدد الأفراد: 2</p>
-        <button onclick="openPopup(' غرفة وحمام')">احجز الآن</button>
+        <button onclick="openPopup('وحدة اقتصادية')">احجز الآن</button>
       </div>
     </div>
 
@@ -280,11 +305,11 @@
         <img src="hotel.jpg" alt="وحدة عائلية صورة 2" />
       </div>
       <div class="info">
-        <h3> غرفة وصالة </h3>
-        <p> غرفة نوم وصالة فسيحة، مثالية للأزواج الباحثين عن الراح.</p>
-        <p>السعر: 200 ريال / الليلة</p>
-        <p>عدد الأفراد: 3</p>
-        <button onclick="openPopup('شقة غرفتين ')">احجز الآن</button>
+        <h3>وحدة عائلية</h3>
+        <p>3 غرف نوم، مطبخ، وصالة واسعة. مناسبة للعائلات الكبيرة.</p>
+        <p>السعر: 250 ريال / الليلة</p>
+        <p>عدد الأفراد: 5</p>
+        <button onclick="openPopup('وحدة عائلية')">احجز الآن</button>
       </div>
     </div>
 
@@ -294,11 +319,11 @@
         <img src="hotel.jpg" alt="وحدة متوسطة صورة 2" />
       </div>
       <div class="info">
-        <h3> شقة غرفتين </h3>
-        <p>غرفتين نوم، مطبخ، وصالة واسعة. مناسبة للعائلات الكبيرة.</p>
-        <p>السعر: 250 ريال / الليلة</p>
-        <p>عدد الأفراد: 5</p>
-        <button onclick="openPopup('غرفة وصالة ')">احجز الآن</button>
+        <h3>وحدة متوسطة</h3>
+        <p>غرفة نوم وصالة فسيحة، مثالية للأزواج الباحثين عن الراحة.</p>
+        <p>السعر: 200 ريال / الليلة</p>
+        <p>عدد الأفراد: 3</p>
+        <button onclick="openPopup('وحدة متوسطة')">احجز الآن</button>
       </div>
     </div>
   </section>
@@ -306,39 +331,39 @@
   <section id="services" class="services">
     <h2>الخدمات الإضافية</h2>
     <ul>
-      <li> واي فاي مجاني</li>
-      <li> مواقف سيارات</li>
-      <li> خدمة تنظيف يومية</li>
+      <li>📶 واي فاي مجاني</li>
+      <li>🚗 مواقف سيارات</li>
+      <li>🧹 خدمة تنظيف يومية</li>
     </ul>
   </section>
 
   <section id="policies" class="policies">
     <h2>سياسات الحجز</h2>
     <ul>
-      <li>تأكيد الحجز يتم بعد الدفع </li>
+      <li>تأكيد الحجز يتم بعد دفع العربون.</li>
       <li>إلغاء الحجز متاح قبل 24 ساعة من الوصول.</li>
-      <p>الالتزام بمواعيد الدخول والخروج (تسجيل الدخول 7ص -الخروج اليوم الثاني الساعة 2.</p>
+      <li>الالتزام بمواعيد الدخول والخروج (3 م - 12 م).</li>
     </ul>
   </section>
-<!--
+
   <section class="testimonials">
     <h2>آراء عملائنا</h2>
     <blockquote>كانت إقامة رائعة! المكان نظيف وهادئ. – أحمد</blockquote>
     <blockquote>الخدمة ممتازة والأسعار مناسبة جدًا. – فاطمة</blockquote>
   </section>
--->
+
   <section id="contact" class="contact">
     <h2>تواصل معنا</h2>
     <p>📞 رقم الهاتف: 0532949990</p>
     <p>✉️ البريد الإلكتروني: info@sandhouses.com</p>
     <div class="whatsapp">
-      <a href="https://wa.me/message/5ZVKCCVJ7XJJI1" target="_blank" rel="noopener noreferrer">📲 احجز عبر واتساب</a>
+      <a href="https://wa.me/966532949990" target="_blank" rel="noopener noreferrer">📲 احجز عبر واتساب</a>
     </div>
   </section>
 
   <section class="location map">
     <h2>موقعنا</h2>
-    <iframe src="https://maps.app.goo.gl/73V48bUR96Uj5Cz6A" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <iframe src="https://www.google.com/maps/embed?..." allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
   </section>
 
   <footer>
@@ -347,34 +372,32 @@
 
   <!-- Popup الحجز -->
   <div class="popup" id="popup">
-    <div class="popup-content">
-      <h3>إدخال بيانات الحجز</h3>
-      <form id="bookingForm" action="https://formspree.io/f/mblyldkl" method="POST" onsubmit="closePopup()">
-        <input type="text" name="الاسم الكامل" placeholder="الاسم الكامل" required />
-        <input type="text" name="رقم الهوية" placeholder="رقم الهوية" required />
-        <input type="date" name="تاريخ الميلاد" placeholder="تاريخ الميلاد" required />
-        <input type="text" name="رقم نسخة الهوية" placeholder="رقم نسخة الهوية" required />
-        <input type="hidden" name="نوع الوحدة" id="unitTypeInput" />
-        <button type="submit">تأكيد الحجز</button>
-      </form>
-    </div>
+  <div class="popup-content">
+    <span class="close-btn" onclick="closePopup()">✖</span>
+    <h3>إدخال بيانات الحجز</h3>
+    <form id="bookingForm" action="https://formspree.io/f/mblyldkl" method="POST" onsubmit="closePopup()">
+      <input type="text" name="الاسم الكامل" placeholder="الاسم الكامل" required>
+      <input type="text" name="رقم الهوية" placeholder="رقم الهوية" required>
+      <input type="date" name="تاريخ الميلاد" required>
+      <input type="text" name="رقم نسخة الهوية" placeholder="رقم نسخة الهوية" required>
+      <input type="hidden" name="نوع الوحدة" id="unitTypeInput">
+      <button type="submit">تأكيد الحجز</button>
+    </form>
   </div>
+</div>
+
 
   <script>
     // فتح البوب أب وتعبئة نوع الوحدة
-  function openPopup(unitType) {
-  document.getElementById("unitTypeInput").value = unitType;
-  document.getElementById("popup").classList.add("show");
-}
-
+    function openPopup(unitType) {
+      document.getElementById("unitTypeInput").value = unitType;
+      document.getElementById("popup").style.display = "flex";
+    }
 
     // إغلاق البوب أب بعد الإرسال (تأخير بسيط لإظهار الإرسال)
     function closePopup() {
-  setTimeout(() => {
-    document.getElementById("popup").classList.remove("show");
-  }, 1000);
-}
-وزيد في CSS:
+      document.getElementById("popup").style.display = "none";
+    }
 
     // السلايدر البسيط للصور داخل كل وحدة
     document.querySelectorAll('.slider').forEach(slider => {
