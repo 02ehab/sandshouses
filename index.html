@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>منازل الرمال</title>
+  <title>منازل الرمال للشقق المخدومة</title>
   <style>
     body {
       margin: 0;
@@ -24,8 +24,44 @@
 
     header h1 {
       margin: 0;
-      font-size: 2em;
+      font-size: 1.2em;
     }
+.menu-toggle {
+  display: none;
+  font-size: 2em;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  nav {
+    display: none;
+    flex-direction: column;
+    background-color: #8b5e3c;
+    width: 100%;
+    text-align: right;
+  }
+
+  nav.active {
+    display: flex;
+  }
+
+  .menu-toggle {
+    display: block;
+    color: white;
+  }
+
+  nav a {
+    padding: 10px;
+    display: block;
+    color: white;
+    text-decoration: none;
+    border-top: 1px solid rgba(255,255,255,0.2);
+  }
+
+  nav a:first-child {
+    border-top: none;
+  }
+}
 
     nav a {
       color: white;
@@ -270,15 +306,20 @@
 <body>
 
   <header>
-    <h1>منازل الرمال</h1>
-    <nav>
-      <a href="#">الرئيسية</a>
-      <a href="#units">الوحدات</a>
-      <a href="#services">الخدمات</a>
-      <a href="#policies">السياسات</a>
-      <a href="#contact">التواصل</a>
-    </nav>
-  </header>
+  <h1>منازل الرمال للشقق المخدومة</h1>
+
+  <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+
+  <!-- روابط التنقل -->
+  <nav id="mainNav">
+    <a href="#">الرئيسية</a>
+    <a href="#units">الوحدات</a>
+    <a href="#services">الخدمات</a>
+    <a href="#policies">السياسات</a>
+    <a href="#contact">التواصل</a>
+  </nav>
+</header>
+
 
   <section class="hero">
     مرحبًا بكم في منازل الرمال - وجهتكم للراحة والاستجمام
@@ -288,27 +329,27 @@
     <div class="unit">
       <div class="slider">
         <img src="hotel.jpg" class="active" alt="وحدة اقتصادية صورة 1" />
-        <img src="hotel.jpg" alt="وحدة اقتصادية صورة 2" />
+        <img src="hotel.jpg" alt="غرفة وحمام  صورة 2" />
       </div>
       <div class="info">
-        <h3>وحدة اقتصادية</h3>
+        <h3>غرفة وحمام </h3>
         <p>غرفة نوم مريحة مع حمام خاص، مثالية للإقامات القصيرة أو للأفراد.</p>
         <p>السعر: 150 ريال / الليلة</p>
         <p>عدد الأفراد: 2</p>
-        <button onclick="openPopup('وحدة اقتصادية')">احجز الآن</button>
+        <button onclick="openPopup('غرفة وحمام ')">احجز الآن</button>
       </div>
     </div>
 
     <div class="unit">
       <div class="slider">
         <img src="hotel.jpg" class="active" alt="وحدة عائلية صورة 1" />
-        <img src="hotel.jpg" alt="وحدة عائلية صورة 2" />
+        <img src="hotel.jpg" alt="غرفة وصالة  صورة 2" />
       </div>
       <div class="info">
-        <h3>وحدة عائلية</h3>
-        <p>3 غرف نوم، مطبخ، وصالة واسعة. مناسبة للعائلات الكبيرة.</p>
-        <p>السعر: 250 ريال / الليلة</p>
-        <p>عدد الأفراد: 5</p>
+        <h3> غرفة وصالة</h3>
+        <p>رفة نوم وصالة فسيحة، مثالية للأزواج الباحثين عن الراحة.</p>
+        <p>السعر: 200 ريال / الليلة</p>
+        <p>عدد الأفراد: 3</p>
         <button onclick="openPopup('وحدة عائلية')">احجز الآن</button>
       </div>
     </div>
@@ -316,14 +357,14 @@
     <div class="unit">
       <div class="slider">
         <img src="hotel.jpg" class="active" alt="وحدة متوسطة صورة 1" />
-        <img src="hotel.jpg" alt="وحدة متوسطة صورة 2" />
+        <img src="hotel.jpg" alt="شقة غرفتين  صورة 2" />
       </div>
       <div class="info">
-        <h3>وحدة متوسطة</h3>
-        <p>غرفة نوم وصالة فسيحة، مثالية للأزواج الباحثين عن الراحة.</p>
-        <p>السعر: 200 ريال / الليلة</p>
-        <p>عدد الأفراد: 3</p>
-        <button onclick="openPopup('وحدة متوسطة')">احجز الآن</button>
+        <h3> شقة غرفتين</h3>
+        <p>2غرفة نوم، مطبخ، وصالة واسعة. مناسبة للعائلات الكبيرة.</p>
+        <p>السعر: 250 ريال / الليلة</p>
+        <p>عدد الأفراد: 5</p>
+        <button onclick="openPopup('شقة غرفتين ')">احجز الآن</button>
       </div>
     </div>
   </section>
@@ -340,19 +381,18 @@
   <section id="policies" class="policies">
     <h2>سياسات الحجز</h2>
     <ul>
-      <li>تأكيد الحجز يتم بعد دفع العربون.</li>
       <li>إلغاء الحجز متاح قبل 24 ساعة من الوصول.</li>
-      <li>الالتزام بمواعيد الدخول والخروج (3 م - 12 م).</li>
+      <li>الالتزام بمواعيد الدخول 7 صباحا والخروج اليوم الثاني 2مساءا.</li>
     </ul>
   </section>
-
+<!----
   <section class="testimonials">
     <h2>آراء عملائنا</h2>
     <blockquote>كانت إقامة رائعة! المكان نظيف وهادئ. – أحمد</blockquote>
     <blockquote>الخدمة ممتازة والأسعار مناسبة جدًا. – فاطمة</blockquote>
   </section>
-
-  <section id="contact" class="contact">
+--> 
+   <section id="contact" class="contact">
     <h2>تواصل معنا</h2>
     <p>📞 رقم الهاتف: 0532949990</p>
     <p>✉️ البريد الإلكتروني: info@sandhouses.com</p>
@@ -363,7 +403,7 @@
 
   <section class="location map">
     <h2>موقعنا</h2>
-    <iframe src="https://www.google.com/maps/embed?..." allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30160.115819721428!2d41.9299328!3d19.1070208!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x15e5009eb40e502b%3A0xc1165cb7a5b60d25!2sRoyal%20Suites%20Aparthotel!5e0!3m2!1sen!2ssa!4v1749115475027!5m2!1sen!2ssa" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
   </section>
 
   <footer>
@@ -381,6 +421,11 @@
       <input type="date" name="تاريخ الميلاد" required>
       <input type="text" name="رقم نسخة الهوية" placeholder="رقم نسخة الهوية" required>
       <input type="hidden" name="نوع الوحدة" id="unitTypeInput">
+      <label for="checkin">تسجيل الوصول</label>
+  <input type="date" id="checkin" name="تاريخ الحجز" required>
+
+  <label for="checkout">تسجيل الخروج</label>
+  <input type="date" id="checkout" name="تاريخ الخروج" required>
       <button type="submit">تأكيد الحجز</button>
     </form>
   </div>
@@ -388,6 +433,11 @@
 
 
   <script>
+    
+  function toggleMenu() {
+    document.getElementById("mainNav").classList.toggle("active");
+  }
+
     // فتح البوب أب وتعبئة نوع الوحدة
     function openPopup(unitType) {
       document.getElementById("unitTypeInput").value = unitType;
