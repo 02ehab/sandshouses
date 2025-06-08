@@ -448,13 +448,7 @@
     </ul>
   </section>
 
-<!----
-  <section class="testimonials">
-    <h2>آراء عملائنا</h2>
-    <blockquote>كانت إقامة رائعة! المكان نظيف وهادئ. – أحمد</blockquote>
-    <blockquote>الخدمة ممتازة والأسعار مناسبة جدًا. – فاطمة</blockquote>
-  </section>
---> 
+
    <section id="contact" class="contact">
     <h2>تواصل معنا</h2>
     <p>📞 رقم الهاتف: 0532949990</p>
@@ -488,10 +482,10 @@
     <h3>إدخال بيانات الحجز</h3>
     <form id="bookingForm" action="https://formspree.io/f/mblyldkl" method="POST" onsubmit="closePopup()">
       <input type="text" name="الاسم الكامل" placeholder="الاسم الكامل" required>
-      <input type="text" name="رقم الهوية" placeholder="رقم الهوية" required>
-      <label for="checkin">تاريخ الميلاد</label>
+      <input type="number" name="رقم الهوية" placeholder="رقم الهوية" required>
+      <label for="date">تاريخ الميلاد</label>
       <input type="date" name="تاريخ الميلاد" required>
-      <input type="text" name="رقم نسخة الهوية" placeholder="رقم نسخة الهوية" required>
+      <input type="number" name="رقم نسخة الهوية" placeholder="رقم نسخة الهوية" required>
 
       <input type="hidden" name="نوع الوحدة" id="unitTypeInput">
       <label for="checkin">تسجيل الوصول</label>
@@ -501,14 +495,14 @@
   <input type="date" id="checkout" name="تاريخ الخروج" required>
         <input type="email" name="email" placeholder="البريد الإلكتروني" required>
 
-      <button type="submit">تأكيد الحجز</button>
+      <button type="button" onclick="redirectToPayment(event)">تأكيد الحجز والدفع</button>
     </form>
   </div>
 </div>
 
 
   <script>
-    
+    //هغير ال type من submit الي button علشان يحولني لصفحة الدفع ميبعتش البيانات علطول
   function toggleMenu() {
     document.getElementById("mainNav").classList.toggle("active");
   }
@@ -524,16 +518,6 @@
       document.getElementById("popup").style.display = "none";
     }
 
-    // السلايدر البسيط للصور داخل كل وحدة
-   // document.querySelectorAll('.slider').forEach(slider => {
-   //   let images = slider.querySelectorAll('img');
-   //   let index = 0;
-   //   setInterval(() => {
-   //     images[index].classList.remove('active');
-   //     index = (index + 1) % images.length;
-   //     images[index].classList.add('active');
-  //    }, 3000);
-  //  });
     let currentImages = [];
 let currentIndex = 0;
 
@@ -565,6 +549,27 @@ function showPrevImage() {
 function showNextImage() {
   currentIndex = (currentIndex + 1) % currentImages.length;
   document.getElementById("popupImage").src = currentImages[currentIndex].src;
+}
+function redirectToMoyasar() {
+  const form = document.getElementById("bookingForm");
+
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
+
+  const name = form.elements["name"].value;
+  const id = form.elements["id"].value;
+  const email = form.elements["email"].value;
+  const unit = form.elements["unit"].value;
+
+  const params = new URLSearchParams({
+    name, id, email, unit
+  });
+
+  // رابط Moysar + البيانات في الرابط
+  const moyasarLink = `https://checkout.moyasar.com/pay/your-link-id?${params.toString()}`;
+  window.location.href = moyasarLink;
 }
   </script>
 
