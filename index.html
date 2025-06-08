@@ -313,6 +313,38 @@
   color: #8b5e3c;
   font-weight: bold;
 }
+.image-popup {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.9);
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.image-popup img {
+  max-width: 90%;
+  max-height: 80vh;
+  margin-bottom: 20px;
+}
+
+.image-popup .close {
+  color: white;
+  font-size: 30px;
+  position: absolute;
+  top: 20px; right: 30px;
+  cursor: pointer;
+}
+
+.image-popup .nav span {
+  color: white;
+  font-size: 40px;
+  margin: 0 20px;
+  cursor: pointer;
+}
 
   </style>
 </head>
@@ -341,8 +373,8 @@
   <section id="units" class="units">
     <div class="unit">
       <div class="slider">
-        <img src="hotel.jpg" class="active" alt="وحدة اقتصادية صورة 1" />
-        <img src="hotel.jpg" alt="غرفة وحمام  صورة 2" />
+        <img src="room3.webp" class="active" alt="وحدة اقتصادية صورة 1" />
+        <img src="room1.webp" alt="غرفة وحمام  صورة 2" />
       </div>
       <div class="info">
         <h3>غرفة وحمام </h3>
@@ -355,12 +387,12 @@
 
     <div class="unit">
       <div class="slider">
-        <img src="hotel.jpg" class="active" alt="وحدة عائلية صورة 1" />
-        <img src="hotel.jpg" alt="غرفة وصالة  صورة 2" />
+        <img src="room3.webp" class="active" alt="وحدة عائلية صورة 1" />
+        <img src="room1.webp" alt="غرفة وصالة  صورة 2" />
       </div>
       <div class="info">
         <h3> غرفة وصالة</h3>
-        <p>رفة نوم وصالة فسيحة، مثالية للأزواج الباحثين عن الراحة.</p>
+        <p>غرفة نوم وصالة ، مثالية للأزواج الباحثين عن الراحة.</p>
         <p>السعر: 200 ريال / الليلة</p>
         <p>عدد الأفراد: 3</p>
         <button onclick="openPopup('وحدة عائلية')">احجز الآن</button>
@@ -369,8 +401,8 @@
 
     <div class="unit">
       <div class="slider">
-        <img src="hotel.jpg" class="active" alt="وحدة متوسطة صورة 1" />
-        <img src="hotel.jpg" alt="شقة غرفتين  صورة 2" />
+        <img src="room3.webp" class="active" alt="وحدة متوسطة صورة 1" />
+        <img src="room1.webp" alt="شقة غرفتين  صورة 2" />
       </div>
       <div class="info">
         <h3> شقة غرفتين</h3>
@@ -379,10 +411,22 @@
         <p>عدد الأفراد: 5</p>
         <button onclick="openPopup('شقة غرفتين ')">احجز الآن</button>
       </div>
+      <div class="unit">
+      <div class="slider">
+        <img src="room3.webp" class="active" alt="وحدة متوسطة صورة 1" />
+        <img src="room1.webp" alt="شقة غرفتين  صورة 2" />
+      </div>
+      <div class="info">
+        <h3> غرفة نوم 3سرير </h3>
+        <p>غرفة نوم واسعة.3 سرير وحمام   .</p>
+        <p>السعر: 150 ريال / الليلة</p>
+        <p>عدد الأفراد: 3</p>
+        <button onclick="openPopup('غرفة نوم 3 سرير  ')">احجز الآن</button>
+      </div>
     </div>
   </section>
 <section class="ad-banner">
-  <img src="eid.webp" alt="إعلان خاص" />
+  <img src="ads.png" alt="إعلان خاص" />
 </section>
 
    <section id="services" class="services">
@@ -430,6 +474,14 @@
   </footer>
 
   <!-- Popup الحجز -->
+   <div id="imagePopup" class="image-popup">
+  <span class="close" onclick="closeImagePopup()">×</span>
+  <img id="popupImage" src="" alt="عرض الصورة">
+  <div class="nav">
+    <span class="prev" onclick="showPrevImage()">❮</span>
+    <span class="next" onclick="showNextImage()">❯</span>
+  </div>
+</div>
   <div class="popup" id="popup">
   <div class="popup-content">
     <span class="close-btn" onclick="closePopup()">✖</span>
@@ -437,14 +489,18 @@
     <form id="bookingForm" action="https://formspree.io/f/mblyldkl" method="POST" onsubmit="closePopup()">
       <input type="text" name="الاسم الكامل" placeholder="الاسم الكامل" required>
       <input type="text" name="رقم الهوية" placeholder="رقم الهوية" required>
+      <label for="checkin">تاريخ الميلاد</label>
       <input type="date" name="تاريخ الميلاد" required>
       <input type="text" name="رقم نسخة الهوية" placeholder="رقم نسخة الهوية" required>
+
       <input type="hidden" name="نوع الوحدة" id="unitTypeInput">
       <label for="checkin">تسجيل الوصول</label>
   <input type="date" id="checkin" name="تاريخ الحجز" required>
 
   <label for="checkout">تسجيل الخروج</label>
   <input type="date" id="checkout" name="تاريخ الخروج" required>
+        <input type="email" name="email" placeholder="البريد الإلكتروني" required>
+
       <button type="submit">تأكيد الحجز</button>
     </form>
   </div>
@@ -469,15 +525,47 @@
     }
 
     // السلايدر البسيط للصور داخل كل وحدة
-    document.querySelectorAll('.slider').forEach(slider => {
-      let images = slider.querySelectorAll('img');
-      let index = 0;
-      setInterval(() => {
-        images[index].classList.remove('active');
-        index = (index + 1) % images.length;
-        images[index].classList.add('active');
-      }, 3000);
-    });
+   // document.querySelectorAll('.slider').forEach(slider => {
+   //   let images = slider.querySelectorAll('img');
+   //   let index = 0;
+   //   setInterval(() => {
+   //     images[index].classList.remove('active');
+   //     index = (index + 1) % images.length;
+   //     images[index].classList.add('active');
+  //    }, 3000);
+  //  });
+    let currentImages = [];
+let currentIndex = 0;
+
+document.querySelectorAll('.slider img').forEach(img => {
+  img.addEventListener('click', function () {
+    const slider = this.closest('.slider');
+    currentImages = Array.from(slider.querySelectorAll('img'));
+    currentIndex = currentImages.indexOf(this);
+    showImagePopup();
+  });
+});
+
+function showImagePopup() {
+  const popup = document.getElementById("imagePopup");
+  const popupImage = document.getElementById("popupImage");
+  popupImage.src = currentImages[currentIndex].src;
+  popup.style.display = "flex";
+}
+
+function closeImagePopup() {
+  document.getElementById("imagePopup").style.display = "none";
+}
+
+function showPrevImage() {
+  currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+  document.getElementById("popupImage").src = currentImages[currentIndex].src;
+}
+
+function showNextImage() {
+  currentIndex = (currentIndex + 1) % currentImages.length;
+  document.getElementById("popupImage").src = currentImages[currentIndex].src;
+}
   </script>
 
 </body>
