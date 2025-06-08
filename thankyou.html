@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>شكرًا لتأكيد الحجز</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      text-align: center;
+      padding: 50px;
+      direction: rtl;
+    }
+
+    .thankyou-box {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #ccc;
+      max-width: 500px;
+      margin: auto;
+    }
+
+    h1 {
+      color: #28a745;
+    }
+
+    p {
+      font-size: 18px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="thankyou-box">
+    <h1>شكرًا لتأكيد الحجز!</h1>
+    <p>تمت عملية الدفع بنجاح. سنقوم بالتواصل معك قريبًا.</p>
+  </div>
+
+  <script>
+    window.onload = function () {
+      const params = new URLSearchParams(window.location.search);
+      const data = {
+        الاسم: params.get("name"),
+        الهوية: params.get("id"),
+        البريد: params.get("email"),
+        الوحدة: params.get("unit")
+      };
+
+      // استبدل هذا الرابط برابط الفورم الخاص بك في Formspree
+      fetch("https://formspree.io/f/mblyldkl", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      }).then(() => {
+        console.log("✅ تم إرسال البيانات إلى Formspree");
+      }).catch(err => {
+        console.error("❌ فشل إرسال البيانات:", err);
+      });
+    };
+  </script>
+
+</body>
+</html>
