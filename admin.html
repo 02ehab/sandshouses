@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>لوحة تحكم - إضافة وحدات</title>
+  <style>
+    /* نفس ستايل الصفحة اللي أرسلتها مع تعديلات بسيطة */
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      direction: rtl;
+      background-color: #f5f5f5;
+      padding: 20px;
+    }
+
+    header {
+      background-color: #8b5e3c;
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+      border-radius: 10px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.5em;
+    }
+
+    form {
+      background: white;
+      padding: 20px;
+      max-width: 400px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    form label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: bold;
+    }
+
+    form input, form textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+      box-sizing: border-box;
+    }
+
+    form button {
+      background-color: #8b5e3c;
+      color: white;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 1.1em;
+      margin-top: 20px;
+      transition: background-color 0.3s ease;
+    }
+    form button:hover {
+      background-color: #6b442c;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: bold;
+      color: green;
+    }
+ body {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 0 15px;
+    direction: rtl;
+  }
+  label {
+    display: block;
+    margin-top: 15px;
+  }
+  input, textarea, button {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+  }
+  button {
+    margin-top: 20px;
+    background-color: #0066cc;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  button:hover {
+    background-color: #004999;
+  }
+  .message {
+    margin-top: 10px;
+    min-height: 20px;
+  }
+  .unit-item {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 4px;
+  }
+  .unit-item button {
+    width: auto;
+    margin: 5px 5px 0 0;
+    padding: 5px 10px;
+  }
+  </style>
+</head>
+<body>
+<header>
+  <h1>لوحة تحكم - إضافة وحدة جديدة</h1>
+</header>
+
+<!-- فورم الإضافة/التعديل -->
+<form id="addUnitForm">
+  <label for="title">عنوان الوحدة</label>
+  <input type="text" id="title" name="title" placeholder="غرفة نوم " required />
+
+  <label for="description">وصف الوحدة</label>
+  <textarea id="description" name="description" placeholder="وصف الوحدة..." required></textarea>
+
+  <label for="price">السعر (ريال / الليلة)</label>
+  <input type="number" id="price" name="price" placeholder="150" required min="1" />
+
+  <label for="capacity">عدد الأفراد</label>
+  <input type="number" id="capacity" name="capacity" placeholder="2" required min="1" />
+
+  <label for="image1">رابط صورة 1</label>
+  <input type="url" id="image1" name="image1" placeholder="https://example.com/image1.jpg" required />
+
+  <label for="image2">رابط صورة 2</label>
+  <input type="url" id="image2" name="image2" placeholder="https://example.com/image2.jpg" required />
+
+  <button type="submit">إضافة الوحدة</button>
+  <div class="message" id="message"></div>
+</form>
+<!-- عرض الوحدات -->
+<div id="unitsList"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { 
+    getDatabase, ref, push, set, onValue, remove, update, get 
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCvwx3I0gb6UTACYawsaMvYvK0AOCEYgzs",
+    authDomain: "booking-3878a.firebaseapp.com",
+databaseURL: "https://booking-3878a-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "booking-3878a",
+    storageBucket: "booking-3878a.appspot.com",
+    messagingSenderId: "611114717520",
+    appId: "1:611114717520:web:4768cb8a7b8465f99fdc55"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const unitsRef = ref(db, 'units');
+
+  const form = document.getElementById('addUnitForm');
+  const message = document.getElementById('message');
+  const unitsList = document.getElementById('unitsList');
+  const submitButton = form.querySelector('button[type="submit"]');
+
+  let editId = null; // لتخزين id الوحدة التي نعدلها
+
+  // تحميل وعرض الوحدات بشكل مباشر
+  onValue(unitsRef, (snapshot) => {
+    unitsList.innerHTML = '';
+    if (!snapshot.exists()) {
+      unitsList.innerHTML = '<p>لا توجد وحدات حالياً.</p>';
+      return;
+    }
+    const units = snapshot.val();
+    for (const id in units) {
+      const unit = units[id];
+      unitsList.insertAdjacentHTML('beforeend', `
+        <div class="unit-item" data-id="${id}">
+          <h3>${unit.title}</h3>
+          <p>${unit.description}</p>
+          <p>السعر: ${unit.price} ريال</p>
+          <p>عدد الأفراد: ${unit.capacity}</p>
+          <button onclick="editUnit('${id}')">تعديل</button>
+          <button onclick="deleteUnit('${id}')">حذف</button>
+        </div>
+      `);
+    }
+  });
+
+  // دالة إضافة وحدة جديدة
+  function addUnitHandler(e) {
+    e.preventDefault();
+    message.textContent = '';
+    message.style.color = 'black';
+
+    const title = form.title.value.trim();
+    const description = form.description.value.trim();
+    const price = parseFloat(form.price.value);
+    const capacity = parseInt(form.capacity.value);
+    const image1 = form.image1.value.trim();
+    const image2 = form.image2.value.trim();
+
+    if (!title || !description || isNaN(price) || isNaN(capacity) || !image1 || !image2) {
+      message.style.color = 'red';
+      message.textContent = 'يرجى تعبئة جميع الحقول بشكل صحيح.';
+      return;
+    }
+
+    const newUnitRef = push(unitsRef);
+    set(newUnitRef, {
+      title,
+      description,
+      price,
+      capacity,
+      images: [image1, image2],
+      createdAt: Date.now()
+    }).then(() => {
+      message.style.color = 'green';
+      message.textContent = 'تمت الإضافة بنجاح!';
+      form.reset();
+    }).catch(error => {
+      message.style.color = 'red';
+      message.textContent = 'حدث خطأ أثناء الإضافة: ' + error.message;
+    });
+  }
+
+  form.addEventListener('submit', addUnitHandler);
+
+  // تعديل وحدة - تعبئة الفورم بالقيم وتغيير سلوك الفورم
+  window.editUnit = function(id) {
+    const unitRef = ref(db, 'units/' + id);
+    get(unitRef).then(snapshot => {
+      if (!snapshot.exists()) {
+        alert('الوحدة غير موجودة');
+        return;
+      }
+      const unit = snapshot.val();
+
+      // تعبئة الفورم بالقيم القديمة
+      form.title.value = unit.title;
+      form.description.value = unit.description;
+      form.price.value = unit.price;
+      form.capacity.value = unit.capacity;
+      form.image1.value = unit.images?.[0] || '';
+      form.image2.value = unit.images?.[1] || '';
+
+      // حفظ id الوحدة التي نعدلها
+      editId = id;
+
+      // تغيير نص الزر
+      submitButton.textContent = 'تعديل الوحدة';
+
+      // إزالة حدث الإضافة وربط حدث التعديل
+      form.removeEventListener('submit', addUnitHandler);
+      form.addEventListener('submit', editUnitHandler);
+    }).catch(() => alert('خطأ في تحميل بيانات الوحدة'));
+  };
+
+  // دالة حفظ التعديل
+  function editUnitHandler(e) {
+    e.preventDefault();
+    if (!editId) return;
+
+    message.textContent = '';
+    message.style.color = 'black';
+
+    const title = form.title.value.trim();
+    const description = form.description.value.trim();
+    const price = parseFloat(form.price.value);
+    const capacity = parseInt(form.capacity.value);
+    const image1 = form.image1.value.trim();
+    const image2 = form.image2.value.trim();
+
+    if (!title || !description || isNaN(price) || isNaN(capacity) || !image1 || !image2) {
+      message.style.color = 'red';
+      message.textContent = 'يرجى تعبئة جميع الحقول بشكل صحيح.';
+      return;
+    }
+
+    const unitRef = ref(db, 'units/' + editId);
+    update(unitRef, {
+      title,
+      description,
+      price,
+      capacity,
+      images: [image1, image2]
+    }).then(() => {
+      message.style.color = 'green';
+      message.textContent = 'تم التعديل بنجاح!';
+      form.reset();
+      submitButton.textContent = 'إضافة الوحدة';
+
+      // استعادة الحدث الأصلي
+      form.removeEventListener('submit', editUnitHandler);
+      form.addEventListener('submit', addUnitHandler);
+
+      editId = null;
+    }).catch(error => {
+      message.style.color = 'red';
+      message.textContent = `حدث خطأ أثناء التعديل: ${error.message}`;
+    });
+  }
+
+  // حذف وحدة
+  window.deleteUnit = function(id) {
+    if (!confirm('هل أنت متأكد من الحذف؟')) return;
+    const unitRef = ref(db, 'units/' + id);
+    remove(unitRef)
+      .then(() => alert('تم الحذف'))
+      .catch(() => alert('حدث خطأ أثناء الحذف'));
+  };
+</script>
+
+</body>
+
+</body>
+</html>
