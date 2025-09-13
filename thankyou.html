@@ -114,8 +114,14 @@
       const data = {
         الاسم: params.get("name"),
         الهوية: params.get("id"),
-        البريد: params.get("email"),
+        تاريخ_الميلاد: params.get("birthdate"),
+        رقم_نسخة_الهوية: params.get("idcopy"),
         الوحدة: params.get("unit"),
+        تاريخ_الحجز: params.get("checkin"),
+        تاريخ_الخروج: params.get("checkout"),
+        البريد: params.get("email"),
+        السعر: params.get("price"),
+        الأيام: params.get("days"),
         المبلغ_الإجمالي: total
       };
 
