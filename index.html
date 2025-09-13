@@ -421,6 +421,7 @@
   <div class="popup-content">
     <span class="close-btn" onclick="closePopup()">✖</span>
     <h3>إدخال بيانات الحجز</h3>
+    <div id="priceDisplay">السعر: <span id="priceValue"></span> ريال / الليلة</div>
     <form id="bookingForm" action="https://formspree.io/f/mblyldkl" method="POST" onsubmit="handleSubmit(event)">
       <input type="text" name="الاسم الكامل" placeholder="الاسم الكامل" required>
       <input type="number" name="رقم الهوية" placeholder="رقم الهوية" required>
@@ -434,6 +435,7 @@
 
   <label for="checkout">تسجيل الخروج</label>
   <input type="date" id="checkout" name="تاريخ الخروج" required>
+  <div id="totalDisplay">إجمالي الأيام: <span id="daysValue"></span> - المبلغ الإجمالي: <span id="totalValue"></span> ريال</div>
         <input type="email" name="email" placeholder="البريد الإلكتروني" required>
 
       <button type="submit">تأكيد الحجز والدفع</button>
@@ -446,10 +448,14 @@
     document.getElementById("mainNav").classList.toggle("active");
   }
 
+  var currentPrice;
   // فتح البوب أب وتعبئة نوع الوحدة
-  function openPopup(unitType) {
+  function openPopup(unitType, price) {
+    currentPrice = price;
     document.getElementById("unitTypeInput").value = unitType;
+    document.getElementById("priceValue").textContent = price;
     document.getElementById("popup").style.display = "flex";
+    calculateTotal();
   }
 
   // إغلاق البوب أب بعد الإرسال (تأخير بسيط لإظهار الإرسال)
@@ -489,6 +495,31 @@
     currentIndex = (currentIndex + 1) % currentImages.length;
     document.getElementById("popupImage").src = currentImages[currentIndex].src;
   }
+
+  function calculateTotal() {
+    const checkin = document.getElementById('checkin').value;
+    const checkout = document.getElementById('checkout').value;
+    if (checkin && checkout) {
+      const start = new Date(checkin);
+      const end = new Date(checkout);
+      const diffTime = end - start;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      if (diffDays > 0) {
+        document.getElementById('daysValue').textContent = diffDays;
+        const total = currentPrice * diffDays;
+        document.getElementById('totalValue').textContent = total;
+      } else {
+        document.getElementById('daysValue').textContent = 'غير صحيح';
+        document.getElementById('totalValue').textContent = '0';
+      }
+    } else {
+      document.getElementById('daysValue').textContent = '';
+      document.getElementById('totalValue').textContent = '';
+    }
+  }
+
+  document.getElementById('checkin').addEventListener('change', calculateTotal);
+  document.getElementById('checkout').addEventListener('change', calculateTotal);
 </script>
 
 <script type="module">
@@ -563,7 +594,7 @@
             <p>${unit.description}</p>
             <p>السعر: ${unit.price} ريال / الليلة</p>
             <p>الأفراد: ${unit.capacity}</p>
-            <button onclick="openPopup('${unit.title}')">احجز الآن</button>
+            <button onclick="openPopup('${unit.title}', ${unit.price})">احجز الآن</button>
           </div>
         </div>
       `;
@@ -601,8 +632,15 @@
         const params = new URLSearchParams();
         params.append('name', data['الاسم الكامل'] || '');
         params.append('id', data['رقم الهوية'] || '');
-        params.append('email', data['email'] || '');
+        params.append('birthdate', data['تاريخ الميلاد'] || '');
+        params.append('idcopy', data['رقم نسخة الهوية'] || '');
         params.append('unit', data['نوع الوحدة'] || '');
+        params.append('checkin', data['تاريخ الحجز'] || '');
+        params.append('checkout', data['تاريخ الخروج'] || '');
+        params.append('email', data['email'] || '');
+        params.append('price', currentPrice);
+        params.append('days', document.getElementById('daysValue').textContent);
+        params.append('total', document.getElementById('totalValue').textContent);
         window.location.href = 'thankyou.html?' + params.toString();
       } else {
         alert('حدث خطأ أثناء إرسال النموذج. يرجى المحاولة مرة أخرى.');
