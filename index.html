@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>منازل الرمال للشقق المخدومة</title>
+  <link rel="stylesheet" href="chatbot.css" />
   <!-- SEO Meta Tags -->
   <title> منازل الرمال | شقق مخدومة للإيجار</title>
   <meta name="description" content=" منازل الرمال تقدم شقق مفروشة مجهزة بالكامل للإيجار، تشمل غرفتين وصالة ومطبخ وحمام، وشقق فاخرة تناسب العائلات والمجموعات.">
@@ -475,7 +476,27 @@
     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30160.115819721428!2d41.9299328!3d19.1070208!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x15e5009eb40e502b%3A0xc1165cb7a5b60d25!2sRoyal%20Suites%20Aparthotel!5e0!3m2!1sen!2ssa!4v1749115475027!5m2!1sen!2ssa" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
   </section>
 
-  
+  <div id="chatbot-container">
+<!-- أيقونة الشات -->
+ <div class="chatbot-icon" onclick="toggleChatbox()">💬</div>
+
+  <!-- نافذة الشات -->
+  <div id="chatPopup" class="chatbot-popup hidden">
+    <div class="chatbot-header">
+      <span>شات  🤖</span>
+      <button onclick="toggleChatbox()">✖</button>
+    </div>
+    <div class="chatbot-messages" id="chatMessages">
+      <p>👋 مرحبًا بك! كيف يمكنني مساعدتك؟</p>
+    </div>
+    <input
+      type="text"
+      id="chatInput"
+      placeholder="اكتب رسالتك..."
+      onkeydown="if(event.key==='Enter') sendChatMessage()"
+    />
+    <button onclick="sendChatMessage()">إرسال</button>
+  </div>
   <footer>
     &copy; 2025 منازل الرمال. جميع الحقوق محفوظة.
   </footer>
@@ -514,7 +535,7 @@
     </form>
   </div>
 </div>
-
+<script src="chatbot.js"></script>
 <script>
   function toggleMenu() {
     document.getElementById("mainNav").classList.toggle("active");
@@ -732,6 +753,7 @@
 
 </body>
 </html>
+
 
 
 
