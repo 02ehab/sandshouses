@@ -40,8 +40,12 @@ function generateBotResponse(message) {
     return "موقعنا في شارع الرمال - المدينة المنورة. يمكنك العثور على خريطة تفصيلية في قسم الموقع على الصفحة.";
   } else if (lowerMessage.includes("مرحبا") || lowerMessage.includes("hello") || lowerMessage.includes("hi")) {
     return "مرحبا بك في منازل الرمال! كيف يمكنني مساعدتك اليوم؟";
+  } else if (lowerMessage.includes("تأكيد") || lowerMessage.includes("confirmation")) {
+    return "تم تأكيد الحجز بنجاح! يرجى تحويل المبلغ إلى IBAN: SA4780000321608010550996 أو رقم الحساب: 321608010550996. سنتواصل معك قريبا.";
+  } else if (lowerMessage.includes("دفع") || lowerMessage.includes("payment")) {
+    return "للدفع، قم بتحويل المبلغ إلى IBAN: SA4780000321608010550996 أو رقم الحساب: 321608010550996. يمكنك نسخ الرقم بالضغط على زر النسخ في صفحة الشكر.";
   } else if (lowerMessage.includes("شكر") || lowerMessage.includes("thank")) {
-    return "العفو! إذا كان لديك أي أسئلة أخرى، فأنا هنا للمساعدة.";
+    return "العفو! تم تأكيد حجزك. إذا كان لديك أي أسئلة أخرى، فأنا هنا للمساعدة.";
   } else {
     return "شكرا لرسالتك. إذا كان لديك أسئلة حول الحجز، الوحدات، أو الخدمات، فأخبرني وسأساعدك.";
   }
