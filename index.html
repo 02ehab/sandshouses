@@ -514,27 +514,57 @@
   <div class="popup-content">
     <span class="close-btn" onclick="closePopup()">✖</span>
     <h3>إدخال بيانات الحجز</h3>
-    <div id="priceDisplay">السعر: <span id="priceValue"></span> ريال / الليلة</div>
-    <form id="bookingForm" action="https://formspree.io/f/mblyldkl" method="POST" onsubmit="handleSubmit(event)">
+
+    <div id="priceDisplay">
+      السعر: <span id="priceValue"></span> ريال / الليلة
+    </div>
+
+    <form
+      id="bookingForm"
+      action="https://formspree.io/f/mblyldkl"
+      method="POST"
+      onsubmit="handleSubmit(event)"
+    >
+
       <input type="text" name="الاسم الكامل" placeholder="الاسم الكامل" required>
+
       <input type="number" name="رقم الهوية" placeholder="رقم الهوية" required>
-      <label for="date">تاريخ الميلاد</label>
+
+      <label>تاريخ الميلاد</label>
       <input type="date" name="تاريخ الميلاد" required>
+
       <input type="number" name="رقم نسخة الهوية" placeholder="رقم نسخة الهوية" required>
 
-      <input type="hidden" name="نوع الوحدة" id="unitTypeInput">
-      <label for="checkin">تسجيل الوصول</label>
-  <input type="date" id="checkin" name="تاريخ الحجز" required>
+      <!-- رقم الجوال (إجباري) -->
+      <input
+        type="tel"
+        name="رقم الجوال"
+        placeholder="رقم الجوال (05xxxxxxxx)"
+        required
+        pattern="^05[0-9]{8}$"
+        title="الرجاء إدخال رقم جوال سعودي صحيح يبدأ بـ 05 ويتكون من 10 أرقام"
+      >
 
-  <label for="checkout">تسجيل الخروج</label>
-  <input type="date" id="checkout" name="تاريخ الخروج" required>
-  <div id="totalDisplay">إجمالي الأيام: <span id="daysValue"></span> - المبلغ الإجمالي: <span id="totalValue"></span> ريال</div>
-        <input type="email" name="email" placeholder="البريد الإلكتروني" required>
+      <input type="hidden" name="نوع الوحدة" id="unitTypeInput">
+
+      <label>تسجيل الوصول</label>
+      <input type="date" id="checkin" name="تاريخ الحجز" required>
+
+      <label>تسجيل الخروج</label>
+      <input type="date" id="checkout" name="تاريخ الخروج" required>
+
+      <div id="totalDisplay">
+        إجمالي الأيام: <span id="daysValue"></span> -
+        المبلغ الإجمالي: <span id="totalValue"></span> ريال
+      </div>
+
+      <input type="email" name="البريد الإلكتروني" placeholder="البريد الإلكتروني" required>
 
       <button type="submit">تأكيد الحجز والدفع</button>
     </form>
   </div>
 </div>
+
 <script src="chatbot.js"></script>
 <script>
   function toggleMenu() {
@@ -753,6 +783,7 @@
 
 </body>
 </html>
+
 
 
 
