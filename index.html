@@ -568,185 +568,47 @@
 <script src="chatbot.js"></script>
 <script type="module">
   import { ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-  import { db } from "./firebase.js"; 
-  // أو احذف السطر ده لو db متعرف فوق في نفس الملف
+  import { db } from "./firebase.js";
 
-  /* ===============================
-     🔴 التحقق من إيقاف الحجز
-  =============================== */
+  let redirected = false;
 
+  // 🔴 التحقق من إيقاف الحجز
   const bookingRef = ref(db, "settings/booking");
-
-  onValue(bookingRef, (snapshot) => {
+  onValue(bookingRef, snapshot => {
+    if (redirected) return;
     if (!snapshot.exists()) return;
-
     const data = snapshot.val();
     if (!data.stopped || !data.from || !data.to) return;
-
-    // منع التحويل لو احنا في صفحة الإيقاف
     if (window.location.pathname.includes("booking-stopped")) return;
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const fromDate = new Date(data.from);
-    fromDate.setHours(0, 0, 0, 0);
-
-    const toDate = new Date(data.to);
-    toDate.setHours(23, 59, 59, 999);
+    const today = new Date(); today.setHours(0,0,0,0);
+    const fromDate = new Date(data.from); fromDate.setHours(0,0,0,0);
+    const toDate = new Date(data.to); toDate.setHours(23,59,59,999);
 
     if (today >= fromDate && today <= toDate) {
+      redirected = true;
       window.location.href = "booking-stopped.html";
     }
   });
 
-  /* ===============================
-     باقي كود الصفحة (كما هو)
-  =============================== */
-
-  function toggleMenu() {
-    document.getElementById("mainNav").classList.toggle("active");
-  }
-
-  let currentPrice;
-
-  function openPopup(unitType, price) {
-    currentPrice = price;
-    document.getElementById("unitTypeInput").value = unitType;
-    document.getElementById("priceValue").textContent = price;
-    document.getElementById("popup").style.display = "flex";
-    document.body.style.overflow = "hidden";
-    calculateTotal();
-  }
-
-  function closePopup() {
-    document.getElementById("popup").style.display = "none";
-    document.body.style.overflow = "";
-  }
-
-  let currentImages = [];
-  let currentIndex = 0;
-
-  document.querySelectorAll(".slider img").forEach((img) => {
-    img.addEventListener("click", function () {
-      const slider = this.closest(".slider");
-      currentImages = Array.from(slider.querySelectorAll("img"));
-      currentIndex = currentImages.indexOf(this);
-      showImagePopup();
-    });
-  });
-
-  function showImagePopup() {
-    const popup = document.getElementById("imagePopup");
-    const popupImage = document.getElementById("popupImage");
-    popupImage.src = currentImages[currentIndex].src;
-    popup.style.display = "flex";
-  }
-
-  function closeImagePopup() {
-    document.getElementById("imagePopup").style.display = "none";
-  }
-
-  function showPrevImage() {
-    currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
-    document.getElementById("popupImage").src = currentImages[currentIndex].src;
-  }
-
-  function showNextImage() {
-    currentIndex = (currentIndex + 1) % currentImages.length;
-    document.getElementById("popupImage").src = currentImages[currentIndex].src;
-  }
-
-  function calculateTotal() {
-    const checkin = document.getElementById("checkin").value;
-    const checkout = document.getElementById("checkout").value;
-
-    if (!checkin || !checkout) return;
-
-    const start = new Date(checkin);
-    const end = new Date(checkout);
-    const diffTime = end - start;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    if (diffDays > 0) {
-      document.getElementById("daysValue").textContent = diffDays;
-      document.getElementById("totalValue").textContent = currentPrice * diffDays;
-    } else {
-      document.getElementById("daysValue").textContent = "غير صحيح";
-      document.getElementById("totalValue").textContent = "0";
-    }
-  }
-
-  document.getElementById("checkin")?.addEventListener("change", calculateTotal);
-  document.getElementById("checkout")?.addEventListener("change", calculateTotal);
-</script>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyCvwx3I0gb6UTACYawsaMvYvK0AOCEYgzs",
-    authDomain: "booking-3878a.firebaseapp.com",
-    databaseURL: "https://booking-3878a-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "booking-3878a",
-    storageBucket: "booking-3878a.appspot.com",
-    messagingSenderId: "611114717520",
-    appId: "1:611114717520:web:4768cb8a7b8465f99fdc55"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+  // جلب الوحدات من Firebase
   const unitsRef = ref(db, "units");
   const unitsContainer = document.getElementById("unitsContainer");
+  let currentPrice = 0;
 
-  onValue(unitsRef, (snapshot) => {
+  onValue(unitsRef, snapshot => {
     unitsContainer.innerHTML = "";
-    if (!snapshot.exists()) {
-      unitsContainer.innerHTML = "<p>لا توجد وحدات حالياً.</p>";
-      return;
-    }
-
-    // تفعيل السلايدر بعد تحميل الوحدات
-    setTimeout(() => {
-      const sliders = document.querySelectorAll('.slider');
-
-      sliders.forEach(slider => {
-        const images = slider.querySelectorAll('img');
-        let currentIndex = 0;
-
-        const showImage = (index) => {
-          images.forEach((img, i) => {
-            img.classList.toggle('active', i === index);
-          });
-        };
-
-        slider.querySelector('.next').addEventListener('click', () => {
-          currentIndex = (currentIndex + 1) % images.length;
-          showImage(currentIndex);
-        });
-
-        slider.querySelector('.prev').addEventListener('click', () => {
-          currentIndex = (currentIndex - 1 + images.length) % images.length;
-          showImage(currentIndex);
-        });
-
-        showImage(currentIndex); // عرض أول صورة
-      });
-    }, 100); // تأخير بسيط للتأكد أن كل العناصر ظهرت
-
+    if (!snapshot.exists()) { unitsContainer.innerHTML = "<p>لا توجد وحدات حالياً.</p>"; return; }
     const units = snapshot.val();
     for (const id in units) {
       const unit = units[id];
       const images = unit.images || [];
-
-      const sliderImages = images.map((img, index) =>
-        `<img src="${img}" class="${index === 0 ? 'active' : ''}" alt="${unit.title}" />`
-      ).join('');
-
+      const sliderImages = images.map((img, i) => `<img src="${img}" class="${i===0?'active':''}" alt="${unit.title}">`).join('');
       const card = `
         <div class="unit">
           <div class="slider">${sliderImages}
+            <button class="prev" onclick="prevSlide(this)">‹</button>
+            <button class="next" onclick="nextSlide(this)">›</button>
           </div>
           <div class="info">
             <h3>${unit.title}</h3>
@@ -755,64 +617,96 @@
             <p>الأفراد: ${unit.capacity}</p>
             <button onclick="openPopup('${unit.title}', ${unit.price})">احجز الآن</button>
           </div>
-        </div>
-      `;
-
+        </div>`;
       unitsContainer.insertAdjacentHTML("beforeend", card);
     }
   });
-</script>
 
-<script>
-  async function handleSubmit(event) {
-    event.preventDefault();
-    const form = event.target;
-    const formData = new FormData(form);
+  // Slider functions
+  window.prevSlide = (btn) => {
+    const imgs = btn.closest('.slider').querySelectorAll('img');
+    let idx = [...imgs].findIndex(img => img.classList.contains('active'));
+    imgs[idx].classList.remove('active');
+    idx = (idx -1 + imgs.length)%imgs.length;
+    imgs[idx].classList.add('active');
+  }
 
-    // Convert FormData to JSON object
-    const data = {};
-    formData.forEach((value, key) => {
-      data[key] = value;
-    });
+  window.nextSlide = (btn) => {
+    const imgs = btn.closest('.slider').querySelectorAll('img');
+    let idx = [...imgs].findIndex(img => img.classList.contains('active'));
+    imgs[idx].classList.remove('active');
+    idx = (idx +1)%imgs.length;
+    imgs[idx].classList.add('active');
+  }
 
+  // Pop-up الحجز
+  window.openPopup = (unitType, price) => {
+    currentPrice = price;
+    document.getElementById("unitTypeInput").value = unitType;
+    document.getElementById("priceValue").textContent = price;
+    document.getElementById("popup").style.display = "flex";
+    document.body.style.overflow = 'hidden';
+    calculateTotal();
+  }
+
+  window.closePopup = () => {
+    document.getElementById("popup").style.display = "none";
+    document.body.style.overflow = '';
+  }
+
+  const checkinInput = document.getElementById("checkin");
+  const checkoutInput = document.getElementById("checkout");
+  checkinInput?.addEventListener("change", calculateTotal);
+  checkoutInput?.addEventListener("change", calculateTotal);
+
+  function calculateTotal() {
+    const checkin = checkinInput.value;
+    const checkout = checkoutInput.value;
+    if (!checkin || !checkout || !currentPrice) return;
+    const diffDays = Math.ceil((new Date(checkout) - new Date(checkin))/(1000*60*60*24));
+    document.getElementById('daysValue').textContent = diffDays>0 ? diffDays : 'غير صحيح';
+    document.getElementById('totalValue').textContent = diffDays>0 ? diffDays*currentPrice : '0';
+  }
+
+  // Form submission
+  window.handleSubmit = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const data = Object.fromEntries(new FormData(form));
     try {
-      // Send data to Formspree
       const response = await fetch(form.action, {
         method: form.method,
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
+        headers: {'Accept':'application/json','Content-Type':'application/json'},
         body: JSON.stringify(data)
       });
-
       if (response.ok) {
-        // Redirect to thankyou.html with URL parameters
-        const params = new URLSearchParams();
-        params.append('name', data['الاسم الكامل'] || '');
-        params.append('id', data['رقم الهوية'] || '');
-        params.append('birthdate', data['تاريخ الميلاد'] || '');
-        params.append('idcopy', data['رقم نسخة الهوية'] || '');
-        params.append('unit', data['نوع الوحدة'] || '');
-        params.append('checkin', data['تاريخ الحجز'] || '');
-        params.append('checkout', data['تاريخ الخروج'] || '');
-        params.append('email', data['email'] || '');
-        params.append('price', currentPrice);
-        params.append('days', document.getElementById('daysValue').textContent);
-        params.append('total', document.getElementById('totalValue').textContent);
+        const params = new URLSearchParams({...data,
+          price: currentPrice,
+          days: document.getElementById('daysValue').textContent,
+          total: document.getElementById('totalValue').textContent
+        });
         window.location.href = 'thankyou.html?' + params.toString();
-      } else {
-        alert('حدث خطأ أثناء إرسال النموذج. يرجى المحاولة مرة أخرى.');
-      }
-    } catch (error) {
-      alert('حدث خطأ أثناء إرسال النموذج. يرجى المحاولة مرة أخرى.');
-      console.error('Error submitting form:', error);
-    }
+      } else alert('حدث خطأ أثناء الإرسال');
+    } catch(err){ alert('حدث خطأ أثناء الإرسال'); console.error(err);}
   }
+
+  // Image Popup
+  let currentImages=[], currentIndex=0;
+  document.querySelectorAll('.slider img').forEach(img => {
+    img.addEventListener('click', ()=>{
+      const slider = img.closest('.slider');
+      currentImages = Array.from(slider.querySelectorAll('img'));
+      currentIndex = currentImages.indexOf(img);
+      document.getElementById('popupImage').src = img.src;
+      document.getElementById('imagePopup').style.display = 'flex';
+    });
+  });
+  window.closeImagePopup = ()=>{ document.getElementById('imagePopup').style.display='none'; }
 </script>
 
 </body>
 </html>
+
 
 
 
