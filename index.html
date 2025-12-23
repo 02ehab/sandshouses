@@ -6,7 +6,6 @@
   <title>منازل الرمال للشقق المخدومة</title>
   <link rel="stylesheet" href="chatbot.css" />
   <!-- SEO Meta Tags -->
-  <title> منازل الرمال | شقق مخدومة للإيجار</title>
   <meta name="description" content=" منازل الرمال تقدم شقق مفروشة مجهزة بالكامل للإيجار، تشمل غرفتين وصالة ومطبخ وحمام، وشقق فاخرة تناسب العائلات والمجموعات.">
   <meta name="keywords" content="شقق مفروشة, شقق للإيجار, شقق فاخرة, غرف للإيجار, شقق عائلية, منازل الرمال">
   <meta name="author" content="Sands Houses">
@@ -470,7 +469,7 @@
   </section>
  <section class="location map">
     <h2>موقعنا</h2>
-    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30160.115819721428!2d41.9299328!3d19.1070208!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x15e5009eb40e502b%3A0xc1165cb7a5b60d25!2sRoyal%20Suites%20Aparthotel!5e0!3m2!1sen!2ssa!4v1749115475027!5m2!1sen!2ssa" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d30160.115819721428!2d41.9299328!3d19.1070208!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x15e5009eb40e502b%3A0xc1165cb7a5b60d25!2sRoyal%20Suites%20Aparthotel!5e0!3m2!1sen!2ssa!4v1749115475027!5m2!1sen!2ssa" width="950" height="400" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
   </section>
 
   <div id="chatbot-container">
@@ -702,6 +701,19 @@
     });
   });
   window.closeImagePopup = ()=>{ document.getElementById('imagePopup').style.display='none'; }
+
+  // Image navigation functions
+  window.showPrevImage = () => {
+    if (currentImages.length === 0) return;
+    currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+    document.getElementById('popupImage').src = currentImages[currentIndex].src;
+  }
+
+  window.showNextImage = () => {
+    if (currentImages.length === 0) return;
+    currentIndex = (currentIndex + 1) % currentImages.length;
+    document.getElementById('popupImage').src = currentImages[currentIndex].src;
+  }
 </script>
 
 </body>
