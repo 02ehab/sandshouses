@@ -567,6 +567,21 @@
 
 <script src="chatbot.js"></script>
 <script>
+
+  const bookingRef = ref(db, "settings/booking");
+
+onValue(bookingRef, (snapshot) => {
+  if (!snapshot.exists()) return;
+
+  const data = snapshot.val();
+  if (!data.stopped) return;
+
+  const now = new Date();
+  if (now >= new Date(data.from) && now <= new Date(data.to)) {
+    window.location.href = "booking-stopped.html";
+  }
+});
+
   function toggleMenu() {
     document.getElementById("mainNav").classList.toggle("active");
   }
@@ -783,6 +798,7 @@
 
 </body>
 </html>
+
 
 
 
