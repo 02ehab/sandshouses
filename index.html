@@ -566,50 +566,71 @@
 </div>
 
 <script src="chatbot.js"></script>
-<script>
+<script type="module">
+  import { ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  import { db } from "./firebase.js"; 
+  // أو احذف السطر ده لو db متعرف فوق في نفس الملف
+
+  /* ===============================
+     🔴 التحقق من إيقاف الحجز
+  =============================== */
 
   const bookingRef = ref(db, "settings/booking");
 
-onValue(bookingRef, (snapshot) => {
-  if (!snapshot.exists()) return;
+  onValue(bookingRef, (snapshot) => {
+    if (!snapshot.exists()) return;
 
-  const data = snapshot.val();
-  if (!data.stopped) return;
+    const data = snapshot.val();
+    if (!data.stopped || !data.from || !data.to) return;
 
-  const now = new Date();
-  if (now >= new Date(data.from) && now <= new Date(data.to)) {
-    window.location.href = "booking-stopped.html";
-  }
-});
+    // منع التحويل لو احنا في صفحة الإيقاف
+    if (window.location.pathname.includes("booking-stopped")) return;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const fromDate = new Date(data.from);
+    fromDate.setHours(0, 0, 0, 0);
+
+    const toDate = new Date(data.to);
+    toDate.setHours(23, 59, 59, 999);
+
+    if (today >= fromDate && today <= toDate) {
+      window.location.href = "booking-stopped.html";
+    }
+  });
+
+  /* ===============================
+     باقي كود الصفحة (كما هو)
+  =============================== */
 
   function toggleMenu() {
     document.getElementById("mainNav").classList.toggle("active");
   }
 
-  var currentPrice;
-  // فتح البوب أب وتعبئة نوع الوحدة
+  let currentPrice;
+
   function openPopup(unitType, price) {
     currentPrice = price;
     document.getElementById("unitTypeInput").value = unitType;
     document.getElementById("priceValue").textContent = price;
     document.getElementById("popup").style.display = "flex";
-    document.body.style.overflow = 'hidden'; // disable background scroll
+    document.body.style.overflow = "hidden";
     calculateTotal();
   }
 
-  // إغلاق البوب أب بعد الإرسال (تأخير بسيط لإظهار الإرسال)
   function closePopup() {
     document.getElementById("popup").style.display = "none";
-    document.body.style.overflow = ''; // restore background scroll
+    document.body.style.overflow = "";
   }
 
   let currentImages = [];
   let currentIndex = 0;
 
-  document.querySelectorAll('.slider img').forEach(img => {
-    img.addEventListener('click', function () {
-      const slider = this.closest('.slider');
-      currentImages = Array.from(slider.querySelectorAll('img'));
+  document.querySelectorAll(".slider img").forEach((img) => {
+    img.addEventListener("click", function () {
+      const slider = this.closest(".slider");
+      currentImages = Array.from(slider.querySelectorAll("img"));
       currentIndex = currentImages.indexOf(this);
       showImagePopup();
     });
@@ -637,33 +658,27 @@ onValue(bookingRef, (snapshot) => {
   }
 
   function calculateTotal() {
-    const checkin = document.getElementById('checkin').value;
-    const checkout = document.getElementById('checkout').value;
-    if (checkin && checkout) {
-      const start = new Date(checkin);
-      const end = new Date(checkout);
-      const diffTime = end - start;
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      if (diffDays > 0) {
-        document.getElementById('daysValue').textContent = diffDays;
-        const total = currentPrice * diffDays;
-        document.getElementById('totalValue').textContent = total;
-      } else {
-        document.getElementById('daysValue').textContent = 'غير صحيح';
-        document.getElementById('totalValue').textContent = '0';
-      }
+    const checkin = document.getElementById("checkin").value;
+    const checkout = document.getElementById("checkout").value;
+
+    if (!checkin || !checkout) return;
+
+    const start = new Date(checkin);
+    const end = new Date(checkout);
+    const diffTime = end - start;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays > 0) {
+      document.getElementById("daysValue").textContent = diffDays;
+      document.getElementById("totalValue").textContent = currentPrice * diffDays;
     } else {
-      document.getElementById('daysValue').textContent = '';
-      document.getElementById('totalValue').textContent = '';
+      document.getElementById("daysValue").textContent = "غير صحيح";
+      document.getElementById("totalValue").textContent = "0";
     }
   }
 
-  const checkinInput = document.getElementById('checkin');
-  const checkoutInput = document.getElementById('checkout');
-  if (checkinInput && checkoutInput) {
-    checkinInput.addEventListener('change', calculateTotal);
-    checkoutInput.addEventListener('change', calculateTotal);
-  }
+  document.getElementById("checkin")?.addEventListener("change", calculateTotal);
+  document.getElementById("checkout")?.addEventListener("change", calculateTotal);
 </script>
 
 <script type="module">
@@ -798,6 +813,7 @@ onValue(bookingRef, (snapshot) => {
 
 </body>
 </html>
+
 
 
 
