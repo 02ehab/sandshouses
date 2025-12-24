@@ -27,5 +27,51 @@
     <p>نعتذر، الحجز متوقف مؤقتًا خلال هذه الفترة.</p>
     <p>يرجى العودة لاحقًا 🌷</p>
   </div>
+  <script type="module">
+  import { ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  import { db } from "./firebase.js";
+
+  let redirected = false;
+
+  // 🔴 التحقق من إيقاف الحجز
+const bookingRef = ref(db, "settings/booking");
+
+onValue(bookingRef, (snapshot) => {
+  if (!snapshot.exists()) return;
+
+  const data = snapshot.val();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // لو الحجز غير متوقف ➜ رجّع المستخدم للموقع
+  if (!data.stopped) {
+    if (window.location.pathname.includes("booking-stopped")) {
+      window.location.href = "index.html";
+    }
+    return;
+  }
+
+  // تأكد من وجود التواريخ
+  if (!data.from || !data.to) return;
+
+  const fromDate = new Date(data.from);
+  fromDate.setHours(0, 0, 0, 0);
+
+  const toDate = new Date(data.to);
+  toDate.setHours(23, 59, 59, 999);
+
+  // لو داخل فترة الإيقاف
+  if (today >= fromDate && today <= toDate) {
+    if (!window.location.pathname.includes("booking-stopped")) {
+      window.location.href = "booking-stopped.html";
+    }
+  } else {
+    // خارج الفترة ➜ رجوع تلقائي
+    if (window.location.pathname.includes("booking-stopped")) {
+      window.location.href = "index.html";
+    }
+  }
+});
+</script>
 </body>
 </html>
