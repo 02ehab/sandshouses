@@ -571,24 +571,46 @@
 
   let redirected = false;
 
-  // 🔴 التحقق من إيقاف الحجز
-  const bookingRef = ref(db, "settings/booking");
-  onValue(bookingRef, snapshot => {
-    if (redirected) return;
-    if (!snapshot.exists()) return;
-    const data = snapshot.val();
-    if (!data.stopped || !data.from || !data.to) return;
-    if (window.location.pathname.includes("booking-stopped")) return;
+ // 🔴 التحقق من إيقاف الحجز
+const bookingRef = ref(db, "settings/booking");
 
-    const today = new Date(); today.setHours(0,0,0,0);
-    const fromDate = new Date(data.from); fromDate.setHours(0,0,0,0);
-    const toDate = new Date(data.to); toDate.setHours(23,59,59,999);
+onValue(bookingRef, (snapshot) => {
+  if (!snapshot.exists()) return;
 
-    if (today >= fromDate && today <= toDate) {
-      redirected = true;
+  const data = snapshot.val();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // لو الحجز غير متوقف ➜ رجّع المستخدم للموقع
+  if (!data.stopped) {
+    if (window.location.pathname.includes("booking-stopped")) {
+      window.location.href = "index.html";
+    }
+    return;
+  }
+
+  // تأكد من وجود التواريخ
+  if (!data.from || !data.to) return;
+
+  const fromDate = new Date(data.from);
+  fromDate.setHours(0, 0, 0, 0);
+
+  const toDate = new Date(data.to);
+  toDate.setHours(23, 59, 59, 999);
+
+  // لو داخل فترة الإيقاف
+  if (today >= fromDate && today <= toDate) {
+    if (!window.location.pathname.includes("booking-stopped")) {
       window.location.href = "booking-stopped.html";
     }
-  });
+  } else {
+    // خارج الفترة ➜ رجوع تلقائي
+    if (window.location.pathname.includes("booking-stopped")) {
+      window.location.href = "index.html";
+    }
+  }
+});
+
 
   // جلب الوحدات من Firebase
   const unitsRef = ref(db, "units");
@@ -718,6 +740,7 @@
 
 </body>
 </html>
+
 
 
 
