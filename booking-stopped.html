@@ -2,31 +2,174 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>الحجز متوقف</title>
+  <title>إيقاف الحجز مؤقتًا</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    }
+
     body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f0f0f, #2b2b2b);
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      font-family: Arial;
-      background: #f8f8f8;
-      text-align: center;
+      direction: rtl;
+      color: #111;
     }
-    .box {
-      background: white;
-      padding: 40px;
+
+    .card {
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 20px;
+      padding: 40px 30px;
+      max-width: 520px;
+      width: 92%;
+      text-align: center;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+      animation: fadeUp 0.8s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .icon {
+      font-size: 56px;
+      margin-bottom: 10px;
+      color: #555;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    h1 {
+      margin: 10px 0 15px;
+      font-size: 26px;
+      color: #111;
+    }
+
+    p {
+      margin: 0 0 25px;
+      font-size: 15px;
+      line-height: 1.9;
+      color: #444;
+    }
+
+    .info {
+      background: #f3f3f3;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 25px;
+      text-align: right;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .info div {
+      margin-bottom: 8px;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn {
+      text-decoration: none;
+      padding: 13px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,.1);
+      font-size: 15px;
+      font-weight: bold;
+      transition: 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-whatsapp {
+      background: #25D366;
+      color: #fff;
+    }
+
+    .btn-whatsapp:hover {
+      background: #1fb85a;
+      transform: translateY(-2px);
+    }
+
+    .btn-call {
+      background: #444;
+      color: #fff;
+    }
+
+    .btn-call:hover {
+      background: #222;
+      transform: translateY(-2px);
+    }
+
+    footer {
+      margin-top: 22px;
+      font-size: 12px;
+      color: #666;
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 22px;
+      }
+      p {
+        font-size: 14px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h2>⚠️ الحجز متوقف حاليًا</h2>
-    <p>نعتذر، الحجز متوقف مؤقتًا خلال هذه الفترة.</p>
-    <p>يرجى العودة لاحقًا 🌷</p>
-  </div>
+
+  <div class="card">
+    <div class="icon">⏸️</div>
+
+    <h1>إيقاف الحجز مؤقتًا</h1>
+
+    <p>
+      نود إفادتكم بأنه تم إيقاف استقبال الحجوزات مؤقتًا خلال هذه الفترة،
+      وذلك لأعمال تنظيمية داخلية تهدف إلى تحسين جودة الخدمة.
+      <br>
+      نشكر تفهمكم ونسعد بخدمتكم قريبًا بإذن الله.
+    </p>
+
+    <div class="info">
+      <div><strong>📍 العنوان:</strong> منطقة عسير – محافظة المجاردة – شارع بدر</div>
+      <div><strong>📞 الهاتف:</strong> 0534131469</div>
+      <div><strong>✉️ البريد الإلكتروني:</strong> royalhotels244@gmail.com</div>
+    </div>
+
+    <div class="actions">
+      <a class="btn btn-whatsapp"
+         href="https://wa.me/966534131469"
+         target="_blank">
+        💬 تواصل معنا عبر واتساب
+      </a>
+
+      <a class="btn btn-call" href="tel:0534131469">
+        📞 اتصال مباشر
+      </a>
+    </div>
   <script type="module">
   import { ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
   import { db } from "./firebase.js";
