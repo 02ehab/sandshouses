@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>لوحة تحكم - إضافة وحدات</title>
+  <title>لوحة تحكم - إدارة الوحدات</title>
 
   <style>
     body {
@@ -110,7 +110,7 @@
   <div class="message" id="stopMessage"></div>
 </section>
 
-<!-- 🟢 فورم إضافة الوحدات -->
+<!-- 🟢 إضافة / تعديل الوحدات -->
 <form id="addUnitForm">
   <label>عنوان الوحدة</label>
   <input type="text" id="title" required>
@@ -131,6 +131,8 @@
   <input type="url" id="image2" required>
 
   <button type="submit">إضافة الوحدة</button>
+  <button type="button" class="danger" id="cancelEdit" style="display:none">إلغاء التعديل</button>
+
   <div class="message" id="message"></div>
 </form>
 
@@ -155,51 +157,33 @@
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
 
-  /* ===============================
-     🔴 إيقاف الحجز
-  =============================== */
-
+  /* 🔴 إيقاف الحجز */
   const bookingRef = ref(db, "settings/booking");
 
-  window.saveStopBooking = async function () {
-    const from = document.getElementById("stopFrom").value;
-    const to = document.getElementById("stopTo").value;
-    const msg = document.getElementById("stopMessage");
+  window.saveStopBooking = async () => {
+    const from = stopFrom.value;
+    const to = stopTo.value;
 
-    if (!from || !to) {
-      msg.style.color = "red";
-      msg.textContent = "حدد فترة الإيقاف كاملة";
-      return;
-    }
+    if (!from || !to) return alert("حدد فترة الإيقاف");
 
-    await set(bookingRef, {
-      stopped: true,
-      from,
-      to
-    });
-
-    msg.style.color = "green";
-    msg.textContent = "تم إيقاف الحجز بنجاح";
+    await set(bookingRef, { stopped: true, from, to });
+    stopMessage.textContent = "تم إيقاف الحجز";
+    stopMessage.style.color = "green";
   };
 
-  window.enableBooking = async function () {
-    await set(bookingRef, {
-      stopped: false
-    });
-
-    const msg = document.getElementById("stopMessage");
-    msg.style.color = "green";
-    msg.textContent = "تم إعادة تفعيل الحجز";
+  window.enableBooking = async () => {
+    await set(bookingRef, { stopped: false });
+    stopMessage.textContent = "تم تفعيل الحجز";
+    stopMessage.style.color = "green";
   };
 
-  /* ===============================
-     🟢 إدارة الوحدات (كما هي)
-  =============================== */
-
+  /* 🟢 الوحدات */
   const unitsRef = ref(db, "units");
   const form = document.getElementById("addUnitForm");
   const message = document.getElementById("message");
   const unitsList = document.getElementById("unitsList");
+  const cancelEdit = document.getElementById("cancelEdit");
+
   let editId = null;
 
   onValue(unitsRef, (snapshot) => {
@@ -214,30 +198,69 @@
           <h4>${u.title}</h4>
           <p>${u.description}</p>
           <p>السعر: ${u.price} ريال</p>
-          <button onclick="deleteUnit('${id}')">حذف</button>
+          <button onclick="editUnit('${id}')">تعديل</button>
+          <button class="danger" onclick="deleteUnit('${id}')">حذف</button>
         </div>
       `;
     }
   });
 
+  window.editUnit = async (id) => {
+    const snap = await get(ref(db, "units/" + id));
+    if (!snap.exists()) return;
+
+    const u = snap.val();
+    title.value = u.title;
+    description.value = u.description;
+    price.value = u.price;
+    capacity.value = u.capacity;
+    image1.value = u.images?.[0] || "";
+    image2.value = u.images?.[1] || "";
+
+    editId = id;
+    form.querySelector("button").textContent = "حفظ التعديل";
+    cancelEdit.style.display = "block";
+
+    message.textContent = "وضع التعديل مفعل";
+    message.style.color = "orange";
+  };
+
+  cancelEdit.onclick = () => {
+    editId = null;
+    form.reset();
+    form.querySelector("button").textContent = "إضافة الوحدة";
+    cancelEdit.style.display = "none";
+    message.textContent = "";
+  };
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    await push(unitsRef, {
+    const data = {
       title: title.value,
       description: description.value,
       price: price.value,
       capacity: capacity.value,
       images: [image1.value, image2.value],
-      createdAt: Date.now()
-    });
+      updatedAt: Date.now()
+    };
 
-    message.textContent = "تمت الإضافة بنجاح";
+    if (editId) {
+      await update(ref(db, "units/" + editId), data);
+      message.textContent = "تم تعديل الوحدة بنجاح";
+    } else {
+      await push(unitsRef, { ...data, createdAt: Date.now() });
+      message.textContent = "تمت الإضافة بنجاح";
+    }
+
     message.style.color = "green";
     form.reset();
+    editId = null;
+    cancelEdit.style.display = "none";
+    form.querySelector("button").textContent = "إضافة الوحدة";
   });
 
-  window.deleteUnit = async function (id) {
+  window.deleteUnit = async (id) => {
     if (!confirm("متأكد من الحذف؟")) return;
     await remove(ref(db, "units/" + id));
   };
